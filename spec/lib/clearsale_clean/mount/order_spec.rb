@@ -10,6 +10,9 @@ RSpec.describe ClearsaleClean::Mount::Order do
     let(:xml_order_bankslip) do
       '<ClearSale><Orders><Order><ID>1234</ID><FingerPrint><SessionID>aaaa1111</SessionID></FingerPrint><Date>2007-11-19T08:37:48</Date><Email>petergriffin@abc.com</Email><ShippingPrice>18.0</ShippingPrice><TotalItems>20.0</TotalItems><TotalOrder>38.0</TotalOrder><QtyInstallments>3</QtyInstallments><DeliveryTimeCD>2</DeliveryTimeCD><IP>127.0.0.1</IP><ShippingType>11</ShippingType><Status>0</Status><BillingData><ID>8888</ID><Type>1</Type><LegalDocument1>24878346337</LegalDocument1><Name>Peter Löwenbräu Griffin</Name><BirthDate>2007-11-19T08:37:48</BirthDate><Email>petergriffin@abc.com</Email><Gender>m</Gender><Address><Street>Bla St</Street><Number>123</Number><Comp></Comp><County>Rhode Island</County><City>Mayland</City><State>Maryland</State><Country>Brasil</Country><ZipCode>00100-011</ZipCode></Address><Phones><Phone><Type>0</Type><DDD>11</DDD><Number>80011002</Number></Phone></Phones></BillingData><ShippingData><ID>8888</ID><Type>1</Type><LegalDocument1>24878346337</LegalDocument1><Name>Peter Löwenbräu Griffin</Name><BirthDate>2007-11-19T08:37:48</BirthDate><Email>petergriffin@abc.com</Email><Gender>m</Gender><Address><Street>Bla St</Street><Number>123</Number><Comp></Comp><County>Rhode Island</County><City>Mayland</City><State>Maryland</State><Country>Brasil</Country><ZipCode>00100-011</ZipCode></Address><Phones><Phone><Type>0</Type><DDD>11</DDD><Number>80011002</Number></Phone></Phones></ShippingData><Payments><Payment><Date>2020-05-20T08:37:46</Date><Amount>50.0</Amount><PaymentTypeID>2</PaymentTypeID><LegalDocument>24878346337</LegalDocument><Address><Street>Bla St</Street><Number>123</Number><Comp></Comp><County>Rhode Island</County><City>Mayland</City><State>Maryland</State><Country>Brasil</Country><ZipCode>00100-011</ZipCode></Address><Currency>986</Currency></Payment></Payments><Items><Item><ID>5555</ID><Name>Pogobol</Name><ItemValue>5.0</ItemValue><Qty>2</Qty><CategoryID>7777</CategoryID><CategoryName>Disney</CategoryName></Item><Item><ID>5555</ID><Name>Pogobol</Name><ItemValue>5.0</ItemValue><Qty>2</Qty><CategoryID>7777</CategoryID><CategoryName>Disney</CategoryName></Item></Items></Order></Orders></ClearSale>'
     end
+    let(:xml_order_pix) do
+      '<ClearSale><Orders><Order><ID>1234</ID><FingerPrint><SessionID>aaaa1111</SessionID></FingerPrint><Date>2007-11-19T08:37:48</Date><Email>petergriffin@abc.com</Email><ShippingPrice>18.0</ShippingPrice><TotalItems>20.0</TotalItems><TotalOrder>38.0</TotalOrder><QtyInstallments>3</QtyInstallments><DeliveryTimeCD>2</DeliveryTimeCD><IP>127.0.0.1</IP><ShippingType>11</ShippingType><Status>0</Status><BillingData><ID>8888</ID><Type>1</Type><LegalDocument1>24878346337</LegalDocument1><Name>Peter Löwenbräu Griffin</Name><BirthDate>2007-11-19T08:37:48</BirthDate><Email>petergriffin@abc.com</Email><Gender>m</Gender><Address><Street>Bla St</Street><Number>123</Number><Comp></Comp><County>Rhode Island</County><City>Mayland</City><State>Maryland</State><Country>Brasil</Country><ZipCode>00100-011</ZipCode></Address><Phones><Phone><Type>0</Type><DDD>11</DDD><Number>80011002</Number></Phone></Phones></BillingData><ShippingData><ID>8888</ID><Type>1</Type><LegalDocument1>24878346337</LegalDocument1><Name>Peter Löwenbräu Griffin</Name><BirthDate>2007-11-19T08:37:48</BirthDate><Email>petergriffin@abc.com</Email><Gender>m</Gender><Address><Street>Bla St</Street><Number>123</Number><Comp></Comp><County>Rhode Island</County><City>Mayland</City><State>Maryland</State><Country>Brasil</Country><ZipCode>00100-011</ZipCode></Address><Phones><Phone><Type>0</Type><DDD>11</DDD><Number>80011002</Number></Phone></Phones></ShippingData><Payments><Payment><Date>2020-05-20T08:37:46</Date><Amount>50.0</Amount><PaymentTypeID>27</PaymentTypeID><LegalDocument>24878346337</LegalDocument><Address><Street>Bla St</Street><Number>123</Number><Comp></Comp><County>Rhode Island</County><City>Mayland</City><State>Maryland</State><Country>Brasil</Country><ZipCode>00100-011</ZipCode></Address><Currency>986</Currency></Payment></Payments><Items><Item><ID>5555</ID><Name>Pogobol</Name><ItemValue>5.0</ItemValue><Qty>2</Qty><CategoryID>7777</CategoryID><CategoryName>Disney</CategoryName></Item><Item><ID>5555</ID><Name>Pogobol</Name><ItemValue>5.0</ItemValue><Qty>2</Qty><CategoryID>7777</CategoryID><CategoryName>Disney</CategoryName></Item></Items></Order></Orders></ClearSale>'
+    end
     let(:order) do
       {
         'user': {
@@ -93,11 +96,19 @@ RSpec.describe ClearsaleClean::Mount::Order do
       end
     end
 
-    context 'when sending order to the xml converter is for any other means of payment' do
+    context 'when sending order to the xml converter is for bankslip' do
       it 'order converted to xml' do
         order[:payment][:payment_type] = 'bankslip'
 
         expect(mount_order.to_xml).to eq xml_order_bankslip
+      end
+    end
+
+    context 'when sending order to the xml converter is for pix' do
+      it 'order converted to xml' do
+        order[:payment][:payment_type] = 'pix'
+
+        expect(mount_order.to_xml).to eq xml_order_pix
       end
     end
   end
