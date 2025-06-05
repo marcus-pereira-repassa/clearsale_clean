@@ -24,7 +24,8 @@ module ClearsaleClean
         creditcard: 1,
         bankslip: 2,
         cupon: 12,
-        other: 14
+        other: 14,
+        pix: 27
       }.freeze
       CARD_TYPE_MAP = {
         diners: 1,
