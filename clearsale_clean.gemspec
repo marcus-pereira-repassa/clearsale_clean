@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   end
 
-  spec.add_dependency 'activesupport', '~> 6.0', '>= 6.0.3.2'
+  spec.add_dependency 'activesupport'
   spec.add_dependency 'builder', '~> 3.2', '>= 3.2.4'
   spec.add_dependency 'savon', '~> 2.12', '>= 2.12.1'
 
